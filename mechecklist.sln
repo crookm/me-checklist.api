@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mechecklist.api", "mechecklist.api\mechecklist.api.csproj", "{A1223750-C31A-42EF-BC7C-6FE8B5294257}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1223750-C31A-42EF-BC7C-6FE8B5294257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1223750-C31A-42EF-BC7C-6FE8B5294257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1223750-C31A-42EF-BC7C-6FE8B5294257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1223750-C31A-42EF-BC7C-6FE8B5294257}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ECDC68BC-1C78-4631-9932-C9D1796111F3}
+	EndGlobalSection
+EndGlobal
