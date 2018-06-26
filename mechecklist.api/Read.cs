@@ -20,7 +20,7 @@ namespace mechecklist.api
         [FunctionName("Read")]
         public static async Task<IActionResult> RunAsync(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "read/{game}/{link}")]HttpRequest req,
-            [Table("checkdata")] CloudTable checkdataTable,
+            [Table("checkdata")] CloudTable checkdata,
             string game, string link,
             TraceWriter log)
         {
@@ -35,7 +35,7 @@ namespace mechecklist.api
 
             do
             {
-                TableQuerySegment<CheckDataEntity> segQueryRes = await checkdataTable.ExecuteQuerySegmentedAsync(query, continuationToken);
+                TableQuerySegment<CheckDataEntity> segQueryRes = await checkdata.ExecuteQuerySegmentedAsync(query, continuationToken);
                 continuationToken = segQueryRes.ContinuationToken;
 
                 if (segQueryRes.Results != null)
