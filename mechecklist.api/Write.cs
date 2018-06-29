@@ -83,7 +83,10 @@ namespace mechecklist.api
                 }
             }
 
-            await checkDataTable.ExecuteBatchAsync(batchOp);
+            if (batchOp.Count > 0) {
+                await checkDataTable.ExecuteBatchAsync(batchOp);
+            }
+
             return new OkObjectResult(new { updated = updated, inserted = inserted });
         }
     }
