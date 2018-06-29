@@ -15,5 +15,6 @@ namespace mechecklist.api
 
         public DateTime datetime { get; set; }
         public bool done { get; set; }
+        public string game { get; set; }
     }
 }
