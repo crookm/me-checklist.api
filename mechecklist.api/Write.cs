@@ -62,7 +62,7 @@ namespace mechecklist.api
                     {
                         CheckDataEntity entity = new CheckDataEntity(PKey, item.Key.ToString()) {
                             datetime = item.Value.datetime.Value, done = item.Value.done };
-                        batchOp.Insert(entity);
+                        batchOp.InsertOrReplace(entity);
 
                         updated++;
                     }
