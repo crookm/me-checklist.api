@@ -20,8 +20,9 @@ namespace mechecklist.api
         [FunctionName("Read")]
         public static async Task<IActionResult> RunAsync(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "read/{game}/{link}")]HttpRequest req,
-            string game, string link,
+            //[Table("checkdata")] CloudTable checkdata,
             Binder binder,
+            string game, string link,
             TraceWriter log)
         {
             string[] validGames = { "1", "2", "3" };
