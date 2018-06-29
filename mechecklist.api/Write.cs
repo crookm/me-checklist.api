@@ -61,7 +61,7 @@ namespace mechecklist.api
                     if (storedCheckData[item.Key].datetime < item.Value.datetime)
                     {
                         CheckDataEntity entity = new CheckDataEntity(PKey, item.Key.ToString()) {
-                            datetime = item.Value.datetime, done = item.Value.done };
+                            datetime = item.Value.datetime.Value, done = item.Value.done };
                         batchOp.Insert(entity);
 
                         updated++;
@@ -73,11 +73,13 @@ namespace mechecklist.api
                         return new BadRequestObjectResult("Key is beyond safe range.");
                     }
 
-                    CheckDataEntity entity = new CheckDataEntity(PKey, item.Key.ToString()) {
-                        datetime = item.Value.datetime, done = item.Value.done };
-                    batchOp.Insert(entity);
+                    if (item.Value.datetime.HasValue) {
+                        CheckDataEntity entity = new CheckDataEntity(PKey, item.Key.ToString()) {
+                            datetime = item.Value.datetime.Value, done = item.Value.done };
+                        batchOp.Insert(entity);
 
-                    inserted++;
+                        inserted++;
+                    }
                 }
             }
 
