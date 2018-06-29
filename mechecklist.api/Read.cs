@@ -1,4 +1,3 @@
-
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -24,8 +23,7 @@ namespace mechecklist.api
             string game, string link,
             TraceWriter log)
         {
-            string[] validGames = { "1", "2", "3" };
-            if (!validGames.Contains(game)) return new BadRequestObjectResult("Specified game is invalid.");
+            if (!Validation.GameVersion(game)) return new BadRequestObjectResult("Specified game is invalid.");
             
             Dictionary<int, CheckDataView> checkData = new Dictionary<int, CheckDataView>();
 
