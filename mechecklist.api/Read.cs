@@ -19,13 +19,13 @@ namespace mechecklist.api
         [FunctionName("Read")]
         public static async Task<IActionResult> RunAsync(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "read/{game}/{link}")]HttpRequest req,
-            [Table("checkdata")] CloudTable checkdata,
+            [Table("checkdata")] CloudTable checkDataTable,
             string game, string link,
             TraceWriter log)
         {
             if (!Validation.GameVersion(game)) return new BadRequestObjectResult("Specified game is invalid.");
             
-            Dictionary<int, CheckDataView> checkData = new Dictionary<int, CheckDataView>();
+            Dictionary<int, CheckDataView> storedCheckData = new Dictionary<int, CheckDataView>();
 
             TableContinuationToken continuationToken = null;
             TableQuery<CheckDataEntity> query = new TableQuery<CheckDataEntity>().Where(
@@ -34,19 +34,19 @@ namespace mechecklist.api
 
             do
             {
-                TableQuerySegment<CheckDataEntity> segQueryRes = await checkdata.ExecuteQuerySegmentedAsync(query, continuationToken);
+                TableQuerySegment<CheckDataEntity> segQueryRes = await checkDataTable.ExecuteQuerySegmentedAsync(query, continuationToken);
                 continuationToken = segQueryRes.ContinuationToken;
 
                 if (segQueryRes.Results != null)
                 {
                     foreach (CheckDataEntity entity in segQueryRes.Results)
                     {
-                        checkData.Add(Int32.Parse(entity.RowKey), new CheckDataView { datetime = entity.datetime, done = entity.done });
+                        storedCheckData.Add(Int32.Parse(entity.RowKey), new CheckDataView { datetime = entity.datetime, done = entity.done });
                     }
                 }
             } while (continuationToken != null);
 
-            return new OkObjectResult(checkData);
+            return new OkObjectResult(storedCheckData);
         }
     }
 }
