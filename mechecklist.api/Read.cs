@@ -31,7 +31,8 @@ namespace mechecklist.api
 
             TableContinuationToken continuationToken = null;
             TableQuery<CheckDataEntity> query = new TableQuery<CheckDataEntity>().Where(
-                TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, $"{Crypto.SHA1(link)}::{game}"));
+                TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal,
+                    $"{Crypto.SHA1($"{link}:-{game}")}::{game}"));
 
             do
             {
