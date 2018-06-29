@@ -20,21 +20,14 @@ namespace mechecklist.api
         [FunctionName("Read")]
         public static async Task<IActionResult> RunAsync(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "read/{game}/{link}")]HttpRequest req,
-            //[Table("checkdata")] CloudTable checkdata,
-            Binder binder,
+            [Table("checkdata")] CloudTable checkdata,
             string game, string link,
             TraceWriter log)
         {
             string[] validGames = { "1", "2", "3" };
             if (!validGames.Contains(game)) return new BadRequestObjectResult("Specified game is invalid.");
-
+            
             Dictionary<int, CheckDataView> checkData = new Dictionary<int, CheckDataView>();
-
-            CloudTable checkdata = await binder.BindAsync<CloudTable>(new Attribute[]
-            {
-                new StorageAccountAttribute("AzureWebJobsStorage"),
-                new TableAttribute("checkData")
-            });
 
             TableContinuationToken continuationToken = null;
             TableQuery<CheckDataEntity> query = new TableQuery<CheckDataEntity>().Where(
