@@ -59,16 +59,23 @@ namespace mechecklist.api
             {
                 if (storedCheckData.ContainsKey(item.Key))
                 {
-                    if (storedCheckData[item.Key].datetime.Value < item.Value.datetime.Value)
+                    if (item.Value.datetime.HasValue && storedCheckData[item.Key].datetime.HasValue)
                     {
-                        CheckDataEntity entity = new CheckDataEntity(PKey, item.Key.ToString()) {
-                            datetime = item.Value.datetime.Value, done = item.Value.done, game = game };
-                        batchOp.InsertOrReplace(entity);
+                        if (storedCheckData[item.Key].datetime.Value < item.Value.datetime.Value)
+                        {
+                            CheckDataEntity entity = new CheckDataEntity(PKey, item.Key.ToString()) {
+                                datetime = item.Value.datetime.Value, done = item.Value.done, game = game };
+                            batchOp.InsertOrReplace(entity);
 
-                        updated++;
+                            updated++;
+                        }
+
+                        if (storedCheckData[item.Key].datetime.Value > item.Value.datetime.Value)
+                        {
+                            endCheckData[item.Key] = storedCheckData[item.Key];
+                        }
                     }
-
-                    if (storedCheckData[item.Key].datetime.Value > item.Value.datetime.Value)
+                    else if (!item.Value.datetime.HasValue && storedCheckData[item.Key].datetime.HasValue)
                     {
                         endCheckData[item.Key] = storedCheckData[item.Key];
                     }
