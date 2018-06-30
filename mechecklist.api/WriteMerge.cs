@@ -28,6 +28,7 @@ namespace mechecklist.api
 
             Dictionary<int, CheckDataView> reqCheckData = JsonConvert.DeserializeObject<Dictionary<int, CheckDataView>>(rawBody as string);
             Dictionary<int, CheckDataView> storedCheckData = new Dictionary<int, CheckDataView>();
+            Dictionary<int, CheckDataView> endCheckData = new Dictionary<int, CheckDataView>();
             Dictionary<int, CheckDataEntity> changedCheckData = new Dictionary<int, CheckDataEntity>();
 
             string PKey = $"{Crypto.SHA1($"{link}:-{game}")}::{game}";
@@ -63,17 +64,25 @@ namespace mechecklist.api
                         CheckDataEntity entity = new CheckDataEntity(PKey, item.Key.ToString()) {
                             datetime = item.Value.datetime.Value, done = item.Value.done, game = game };
                         batchOp.InsertOrReplace(entity);
+                        endCheckData.Add(item.Key, item.Value);
 
                         updated++;
+                    }
+
+                    if (storedCheckData[item.Key].datetime > item.Value.datetime)
+                    {
+                        endCheckData.Add(item.Key, storedCheckData[item.Key]);
                     }
                 }
                 else
                 {
-                    if (item.Key > 512) {
+                    if (item.Key > 512)
+                    {
                         return new BadRequestObjectResult("Key is beyond safe range.");
                     }
 
-                    if (item.Value.datetime.HasValue) {
+                    if (item.Value.datetime.HasValue)
+                    {
                         CheckDataEntity entity = new CheckDataEntity(PKey, item.Key.ToString()) {
                             datetime = item.Value.datetime.Value, done = item.Value.done, game = game };
                         batchOp.Insert(entity);
@@ -83,11 +92,12 @@ namespace mechecklist.api
                 }
             }
 
-            if (batchOp.Count > 0) {
+            if (batchOp.Count > 0)
+            {
                 await checkDataTable.ExecuteBatchAsync(batchOp);
             }
 
-            return new OkObjectResult(new { updated = updated, inserted = inserted });
+            return new OkObjectResult(endCheckData);
         }
     }
 }
