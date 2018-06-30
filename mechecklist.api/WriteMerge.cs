@@ -27,8 +27,8 @@ namespace mechecklist.api
             string rawBody = await new StreamReader(req.Body).ReadToEndAsync();
 
             Dictionary<int, CheckDataView> reqCheckData = JsonConvert.DeserializeObject<Dictionary<int, CheckDataView>>(rawBody as string);
+            Dictionary<int, CheckDataView> endCheckData = JsonConvert.DeserializeObject<Dictionary<int, CheckDataView>>(rawBody as string);
             Dictionary<int, CheckDataView> storedCheckData = new Dictionary<int, CheckDataView>();
-            Dictionary<int, CheckDataView> endCheckData = new Dictionary<int, CheckDataView>();
             Dictionary<int, CheckDataEntity> changedCheckData = new Dictionary<int, CheckDataEntity>();
 
             string PKey = $"{Crypto.SHA1($"{link}:-{game}")}::{game}";
@@ -64,14 +64,13 @@ namespace mechecklist.api
                         CheckDataEntity entity = new CheckDataEntity(PKey, item.Key.ToString()) {
                             datetime = item.Value.datetime.Value, done = item.Value.done, game = game };
                         batchOp.InsertOrReplace(entity);
-                        endCheckData.Add(item.Key, item.Value);
 
                         updated++;
                     }
 
                     if (storedCheckData[item.Key].datetime > item.Value.datetime)
                     {
-                        endCheckData.Add(item.Key, storedCheckData[item.Key]);
+                        endCheckData[item.Key] = storedCheckData[item.Key];
                     }
                 }
                 else
