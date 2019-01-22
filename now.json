@@ -1,0 +1,8 @@
+{
+  "name": "me-checklist",
+  "version": 2,
+  "public": false,
+  "builds": [
+    { "src": "read/index.js", "use": "@now/node" }
+  ]
+}
