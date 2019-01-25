@@ -82,7 +82,7 @@ exports.writemerge = async (req, res) => {
   res.send(updated);
 
   await progress.updateOne(
-    { _id: doc._id },
+    { passphrase },
     {
       $set: {
         passphrase,
