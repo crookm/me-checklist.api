@@ -45,10 +45,10 @@ exports.writemerge = async (req, res) => {
   if (!doc) return res.status(404).send({ error: "not found" });
 
   let data = doc.data[req.query["game"]] || {};
-  let updated = {};
+  let updated = data;
 
   Object.entries(req.body["data"]).map(([key, entry]) => {
-    if (!listdata[req.query["game"]][key]) return; // make sure the key exists for this game
+    if (!listdata[req.query["game"]]["list"][key]) return; // make sure the key exists for this game
     if (data[key]) { // do we have something stored with this key already?
       if (entry["datetime"] && data[key]["datetime"]) {
         if (new Date(entry["datetime"]) > new Date(data[key]["datetime"])) {
