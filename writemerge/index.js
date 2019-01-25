@@ -5,7 +5,7 @@ const client = new mongo(process.env.mongo, { useNewUrlParser: true });
 
 const valid_games = ["1", "2", "3"];
 
-let db, progress;
+let db, progress, list, listdata;
 
 exports.writemerge = async (req, res) => {
   res.header("Content-Type", "application/json");
@@ -27,6 +27,12 @@ exports.writemerge = async (req, res) => {
 
   db = db || client.db("checkdata");
   progress = progress || db.collection("progress");
+  list = list || db.collection("list");
+
+  if (!listdata) {
+    listdata = [];
+    listdata[req.query["game"]] = await list.findOne({ game: req.query["game"] });
+  }
 
   let passphrase = sjcl.codec.hex.fromBits(
     sjcl.hash.sha256.hash(req.body["passphrase"])
@@ -39,10 +45,11 @@ exports.writemerge = async (req, res) => {
 
   if (!doc) return res.status(404).send({ error: "not found" });
 
-  let data = doc.data[req.query["game"]];
+  let data = doc.data[req.query["game"]] || {};
   let updated = {};
 
   Object.entries(req.body["data"]).map(([key, entry]) => {
+    if (!listdata[req.query["game"]][key]) return; // make sure the key exists for this game
     if (data[key]) { // do we have something stored with this key already?
       if (entry["datetime"] && data[key]["datetime"]) {
         if (new Date(entry["datetime"]) > new Date(data[key]["datetime"])) {
