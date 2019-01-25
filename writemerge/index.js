@@ -9,6 +9,8 @@ let db, progress, list, listdata;
 
 exports.writemerge = async (req, res) => {
   res.header("Content-Type", "application/json");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
 
   if (!client.isConnected())
     await client.connect().catch(err => {

@@ -9,6 +9,8 @@ let db, progress;
 
 exports.read = async (req, res) => {
   res.header("Content-Type", "application/json");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
 
   if (!client.isConnected())
     await client.connect().catch(err => {
