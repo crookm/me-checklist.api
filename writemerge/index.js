@@ -42,7 +42,7 @@ exports.writemerge = async (req, res) => {
     { project: { [`data.${req.query["game"]}`]: 1 } }
   );
 
-  if (!doc) return res.status(404).send({ error: "not found" });
+  if (!doc) doc = { passphrase, analytics: {}, data: {} }
 
   let data = doc.data[req.query["game"]] || {};
   let updated = data;
@@ -85,10 +85,12 @@ exports.writemerge = async (req, res) => {
     { _id: doc._id },
     {
       $set: {
+        passphrase,
         [`data.${req.query["game"]}`]: updated,
         "analytics.write_last": new Date()
       },
       $inc: { "analytics.write": 1 }
-    }
+    },
+    { upsert: true }
   );
 };
