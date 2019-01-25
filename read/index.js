@@ -38,7 +38,7 @@ exports.read = async (req, res) => {
 
   if (!doc) return res.status(404).send({ error: "not found" });
 
-  res.send(doc["data"]["1"]); // return the doc
+  res.send(doc["data"][req.query["game"]]); // return the doc
 
   await progress.updateOne(
     { _id: doc._id },
