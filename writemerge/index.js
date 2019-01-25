@@ -29,10 +29,9 @@ exports.writemerge = async (req, res) => {
   progress = progress || db.collection("progress");
   list = list || db.collection("list");
 
-  if (!listdata) {
-    listdata = [];
+  if (!listdata) listdata = [];
+  if (!listdata[req.query["game"]])
     listdata[req.query["game"]] = await list.findOne({ game: req.query["game"] });
-  }
 
   let passphrase = sjcl.codec.hex.fromBits(
     sjcl.hash.sha256.hash(req.body["passphrase"])
