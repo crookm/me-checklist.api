@@ -53,38 +53,33 @@ exports.writemerge = async (req, res) => {
 
     if (!doc) doc = { passphrase, analytics: {}, data: {} }
 
+    let body = JSON.parse(req.body["data"]);
     let data = doc.data[req.query["game"]] || {};
     let updated = data;
 
-    Object.entries(req.body["data"]).map(([key, entry]) => {
-      if (!listdata[req.query["game"]]["list"][key]) return; // make sure the key exists for this game
-      if (data[key]) { // do we have something stored with this key already?
-        if (entry["datetime"] && data[key]["datetime"]) {
+    Object.entries(body).map(([key, entry]) => {
+      if (entry["datetime"]) {
+        if (!listdata[req.query["game"]]["list"][key]) return; // make sure the key exists for this game
+        if (new Date(entry["datetime"]).getTime() === new Date(0).getTime()) return; // only work with initialised dates
+        
+        if (data[key]) {
           if (new Date(entry["datetime"]) > new Date(data[key]["datetime"])) {
-            // user data newer than db, take its value
             updated[key] = {
               done: entry["done"],
-              datetime: entry["datetime"]
+              datetime: new Date(entry["datetime"])
             };
           } else {
-            // db data still relevant otherwise
             updated[key] = {
               done: data[key]["done"],
-              datetime: data[key]["datetime"]
+              datetime: new Date(data[key]["datetime"])
             };
           }
-        } else if (!entry["datetime"] && data[key]["datetime"]) {
-          // user data doesn't have a date (not toggled yet), but the db has data
+        } else {
           updated[key] = {
-            done: data[key]["done"],
-            datetime: data[key]["datetime"]
+            done: entry["done"],
+            datetime: new Date(entry["datetime"])
           };
         }
-      } else { // db doesn't know about this key, store it
-        updated[key] = {
-          done: entry["done"] || false,
-          datetime: entry["datetime"] || new Date(0)
-        };
       }
     });
 
